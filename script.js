@@ -11,7 +11,7 @@ const handleOnSubmit = (form) => {
   const newForm = new FormData(form);
 
   const task = newForm.get("task");
-  const hr = newForm.get("hr");
+  const hr = +newForm.get("hr");
   const obj = {
     task,
     hr,
@@ -30,6 +30,8 @@ const handleOnSubmit = (form) => {
   console.log(taskList);
   display();
   total();
+
+  form.reset();
 };
 
 const display = () => {
@@ -72,7 +74,9 @@ const displayBadList = () => {
 <td>${item.hr}hrs</td>
 <td class="text-end">
  
-  <button class="btn btn-warning btn-sm">
+  <button onclick="switchTask('${
+    item.id
+  }', 'entry')" class="btn btn-warning btn-sm">
     <i class="fa-sharp fa-solid fa-arrow-left-long"></i>
   </button>
   <button onclick="handOnDelete('${item.id}')" class="btn btn-danger btn-sm">
@@ -83,6 +87,13 @@ const displayBadList = () => {
   });
 
   badElm.innerHTML = str;
+  // total bad hr calcuation
+
+  const badHrs = temArg.reduce((acc, item) => {
+    return acc + item.hr;
+  }, 0);
+  // show in the element
+  document.getElementById("badHrs").innerText = badHrs;
 };
 
 //[{task: "dd", hr:"88"}]
@@ -100,6 +111,7 @@ const handOnDelete = (id) => {
   if (window.confirm("Are you sure, you want to delete the item?")) {
     taskList = taskList.filter((item) => item.id !== id);
     display();
+    total();
   }
 };
 
